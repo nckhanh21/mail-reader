@@ -98,7 +98,7 @@ async function getAllEmails(auth) {
   try {
     const res = await gmail.users.messages.list({
       userId: 'me',
-      // q: 'in:inbox is:unread',
+      q: 'in:inbox is:unread',
     });
 
     const messages = res.data.messages;
