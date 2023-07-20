@@ -24,6 +24,14 @@ async function authenticate() {
   try {
     const token = await fs.readFile(TOKEN_PATH);
     oAuth2Client.setCredentials(JSON.parse(token));
+    // Kiểm tra xem access token có hết hạn hay không
+    if (oAuth2Client.isTokenExpiring()) {
+      // Nếu access token hết hạn, sử dụng refresh token để lấy access token mới
+      await oAuth2Client.refreshToken(oAuth2Client.credentials.refresh_token);
+      const newToken = oAuth2Client.credentials;
+      // Lưu access token mới vào file token.json
+      await fs.writeFile(TOKEN_PATH, JSON.stringify(newToken));
+    }
   } catch (error) {
     await getNewToken(oAuth2Client);
   }
@@ -100,7 +108,7 @@ async function getAllEmails(auth) {
       userId: 'me',
       q: 'in:inbox is:unread',
     });
-
+    // console.log("---------------------------");
     const messages = res.data.messages;
     if (messages && messages.length > 0) {
       for (const message of messages) {
@@ -197,6 +205,7 @@ function getNewToken(oAuth2Client) {
     const authUrl = oAuth2Client.generateAuthUrl({
       access_type: 'offline',
       scope: SCOPES,
+      prompt: 'consent',
     });
 
     console.log('Authorize this app by visiting this url:', authUrl);
@@ -218,7 +227,7 @@ function getNewToken(oAuth2Client) {
 
         oAuth2Client.setCredentials(token);
 
-        fs.writeFile(TOKEN_PATH, JSON.stringify(token))
+        fs.writeFile(TOKEN_PATH, JSON.stringify(oAuth2Client.credentials))
           .then(() => {
             resolve();
           })
@@ -239,6 +248,12 @@ async function getAllGmails() {
 // Xác thực và lấy toàn bộ email
 // authenticate(getAllEmails);
 
+async function getOneEmail(id) {
+  const mail = await Gmail.find({ _id: id });
+  return mail;
+}
+
+
 
 module.exports = {
   authenticate,
@@ -248,5 +263,7 @@ module.exports = {
   decodeBase64Url,
   parseEmail,
   downloadAttachments,
-  getAllGmails
+  getAllGmails,
+  getOneEmail
 };
+

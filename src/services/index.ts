@@ -1,4 +1,4 @@
-const { authenticate, getAllEmails, getAllGmails } = require("./mail-service");
+const { authenticate,getAllEmails, getOneEmail, getAllGmails } = require("./mail-service");
 
 export const getEmails = async () => {
     authenticate().then((auth: any) => {
@@ -26,5 +26,8 @@ export const queryAllGmails = async () => {
     return await getAllGmails()
 }
 
+export const queryOneEmail = async (id: string) => {
+    return getOneEmail(id);
+}
 
 

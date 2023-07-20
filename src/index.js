@@ -68,8 +68,9 @@ function getAllEmails(auth) {
   gmail.users.messages.list(
     {
       userId: 'me',
-      // q: 'in:inbox is:unread',
+      q: 'in:inbox is:unread',
     },
+    
     (err, res) => {
       if (err) {
         console.error('Lỗi khi lấy email:', err);
@@ -77,6 +78,8 @@ function getAllEmails(auth) {
       }
 
       const messages = res.data.messages;
+    console.log("---------------------------");
+    console.log(res.data.nextPageToken);
       if (messages && messages.length > 0) {
         messages.forEach((message) => {
           gmail.users.messages.get(

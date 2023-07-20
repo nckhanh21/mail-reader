@@ -12,9 +12,11 @@ import swaggerUi = require('swagger-ui-express');
 import fs from 'fs';
 import cors from 'cors';
 import mongoose from "mongoose";
-const { google } = require('googleapis');
+import cron from 'node-cron';
 
 import './components/mail/mail.controller'
+import { getEmails } from "./services";
+
 
 
 const app = express();
@@ -84,7 +86,12 @@ app.use(function notFoundHandler(_req, res: ExResponse) {
   });
 });
 
-//connect to gmail api
+
+//cron run every 5 minutes
+cron.schedule('*/5 * * * *', () => {
+  console.log('crawl gmail every 5 minutes');
+  getEmails();
+});
 
 
 

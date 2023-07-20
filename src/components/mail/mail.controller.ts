@@ -3,7 +3,7 @@ import { successResponse, failedResponse, IListResponse } from "../../utils/http
 import axios from "axios";
 import Mail from "./mail.model";
 import { IMail } from "./mail.types";
-import {getEmails, queryAllGmails} from "../../services";
+import {getEmails, queryAllGmails, queryOneEmail} from "../../services";
 // import Gmail from "./gmail.model";
 // import { oAuth2Client } from "../../app";
 
@@ -41,6 +41,10 @@ export class MailController extends Controller {
     //     }
     // }
 
+    /**
+     * @summary Get all mails from database 
+     * @returns 
+     */
     @Get("get-mails")
     public async getMails(): Promise<any> {
         try {
@@ -54,21 +58,40 @@ export class MailController extends Controller {
     }
 
 
-    @Get("get-data")
-    public async getData(): Promise<any> {
+    // @Get("get-data")
+    // public async getData(): Promise<any> {
+    //     try {
+    //         const result = await getEmails();
+    //         // return successResponse(result);
+    //         // const gmails = Gmail.find()
+    //         // return successResponse(gmails);
+    //         // const res = await queryAllGmails()
+    //         return successResponse("OK");
+    //     }
+    //     catch (err) {
+    //         this.setStatus(500);
+    //         return failedResponse('Execute service went wrong', err);
+    //     }
+    // }
+
+    /**
+     * @summary Get file of a mail
+     * @param id
+     */
+    @Get("get-file/{id}")
+    public async getImage(@Path() id: string): Promise<any> {
         try {
-            const result = await getEmails();
-            // return successResponse(result);
-            // const gmails = Gmail.find()
-            // return successResponse(gmails);
-            // const res = await queryAllGmails()
-            return successResponse("OK");
+            const email = await queryOneEmail(id);
+            const fileLinks = email.fileLinks;
+            // const file = fs.readFileSync(fileLinks[0]);
+            // return successResponse(image);
         }
         catch (err) {
             this.setStatus(500);
             return failedResponse('Execute service went wrong', err);
         }
     }
+    
 }
 
 
