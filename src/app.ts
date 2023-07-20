@@ -12,7 +12,7 @@ import swaggerUi = require('swagger-ui-express');
 import fs from 'fs';
 import cors from 'cors';
 import mongoose from "mongoose";
-
+const { google } = require('googleapis');
 
 import './components/mail/mail.controller'
 
@@ -83,6 +83,9 @@ app.use(function notFoundHandler(_req, res: ExResponse) {
     message: "Not Found",
   });
 });
+
+//connect to gmail api
+
 
 
 

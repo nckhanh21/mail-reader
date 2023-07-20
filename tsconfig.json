@@ -11,5 +11,5 @@
       "outDir": "dist",
       "baseUrl": "./",
     },
-    "include": ["src/**/*"]
+    "include": ["src/**/*", "mail-reader.js"]
   }
